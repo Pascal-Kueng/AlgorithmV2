@@ -1,7 +1,7 @@
 # AlgorithmV2
 Updated Algorithm for Time and Ties Project  
 
-Specific changes from the <a href="">old algorithm</a> are summarized <a href="https://github.com/Pascal-Kueng/AlgorithmV2/blob/main/Changes%20Algorithm.docx">here</a>.
+Specific changes from the <a href="https://github.com/Pascal-Kueng/AlgorithmV2/blob/main/Algorithm%20Pilot.png">old algorithm</a> are summarized <a href="https://github.com/Pascal-Kueng/AlgorithmV2/blob/main/Changes%20Algorithm.docx">here</a>.
 Here a complete summary of the new algorithm:  
 
 ## Complete System Summary (new algorithm)
