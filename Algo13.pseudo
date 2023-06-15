@@ -1,0 +1,152 @@
+
+
+///////////////////////// EMA (ecological momentary assessment) triggering and scoring /////////////////////////////
+
+// persistent variable for each person, set to false each evening. 
+let was_already_triggered = false 
+
+// Cronjob:
+// once at 5am (pass variable upcoming_timeslot = 1), 11am (upcoming_timeslot = 2), 12pm (upcoming_timeslot = 88), 1pm (upcoming_timeslot = 3), 5pm (upcoming_timeslot = 4) foreach person (CAREFUL, not just foreach couple!)
+function decide_if_trigger_EMA(person, upcoming_time_slot, was_already_triggered) {
+    if (was_already_triggered) {
+        if (upcoming_time_slot == 4) { // last slot of the day, reset this variable
+            was_already_triggered = false
+        }
+        return null
+    }
+
+    let expected_activity = get_answer_from_last_daily_questionnaire(person)['ss_exp_active'] // retrieve this persons last daily questionnaire answers. 
+    
+    if (expected_activity == 0) { // 0 == no activity planned
+        if (upcoming_time_slot == 88) { // lunch-EMA time slot
+            trigger_EMA() // send EMA to person. See logic in EMA_submitted() below as well. 
+            was_already_triggered = true
+            return null
+        } else {
+            return null
+        }
+    }
+
+    if (expected_activity == upcoming_time_slot) { 
+        trigger_EMA()
+        was_already_triggered = true
+    }
+
+    return null
+}
+
+
+// The actual EMA should also include some logic:
+// when EMA was submitted by "person":
+// alternatively this could be handled with a separate cronjob that checks in time-intervals, if the EMA was submitted (like Algorithm 1 below).
+function EMA_submitted(person, EMA_answers, upcoming_time_slot) {
+    let expected_activity = EMA_answers['ss_exp_active']
+
+    if (expected_activity >= upcoming_time_slot) { // greater or equal, so if the activity is upcoming today still. 
+        select_situation('before_activity')
+    }
+    return null
+}
+
+
+///////////////////////// Algorithm 1: Calculate Situation Scores /////////////////////////////
+
+// Selection Cronjob: 
+// every 5 minutes between 6pm and 5am (foreach couple):
+function daily_situation_selection(couple) {
+    if (!is_partner_A_diary_complete or !is_partner_B_diary_complete) {
+        
+        if (is_past_4am) {
+            return null // check again at next cronjob
+        } else {
+            trigger_situations_0A_0B_0C() // same as pilot
+            log_all_total_scores_as_zero() // in same files as in pilot (selection chains etc.)
+            return null
+        }
+    }
+
+    calculate_total_scores()
+    select_situation('evening')
+}
+
+
+function calculate_total_scores(all_situations) {
+    let total_scores = {} // key: situation, value: score
+    foreach situation in all_situations {
+        let SeverityScore = calculate_severity_score(situation) // same as pilot. IMPORTANT: If variables are missing, use NA, not 0. 
+        let FrequencyScore = calculate_frequency_score(situation) // same as pilot.
+        let TimeDelta = calculate_time_delta(situation) // same as pilot
+
+        TotalScore = 3 * SeverityScore + FrequencyScore + TimeDelta
+        total_scores[situation] = TotalScore
+    }
+
+    log_total_scores(total_scores)
+    return null
+}
+
+
+///////////////////////// Algorithm 2: Select Situations /////////////////////////////
+
+// Cronjob:
+// sundays at 4am (foreach couple):
+// can also be triggered by EMA (see above) and other Algorithm 1. 
+function select_situation(slot) {
+    let situations_for_current_slot = get_situations_for_current_slot(slot) // simple subsetting
+
+    final_scores = {}
+    foreach (situation in situations_for_current_slot) {
+        let last_14_total_scores = get_last_14_total_scores(situation) // from log files somehow. 
+
+        let AggregatedScore = mean(last_14_total_scores)
+        
+        let SelectionScore
+        if (slot == 'evening' or slot == 'before_planning') {
+            SelectionScore =last_14_total_scores[-1] // last Total Score from DQ
+        } else if (slot == 'before_activity') {
+            SelectionScore = get_todays_EMA_score(situation) 
+        }
+
+        FinalScore = (AggregatedScore^0.6) * (SelectionScore^0.4)
+        final_scores[situation] = FinalScore
+    }
+
+    log_final_scores(final_scores)
+
+    let selected_situation = get_situation_with_highest_total_score(final_scores) // max(final_score) with tiebreaker Timedelta
+    intervention_selection(selected_situation)
+    return null
+}
+
+
+///////////////////////// Algorithm 3: Select Intervention /////////////////////////////
+
+// no Cronjob, only triggered by Algorithm 2. 
+function intervention_selection(selected_situation) {
+    let intervention_pool = get_intervention_pool(selected_situation)
+    
+    let total_scores = {}
+    foreach (intervention in intervention_pool) {
+        let Frequency = get_frequency(intervention)
+        let Timedelta = get_timedelta(intervention)
+        let TotalScore = Frequency + Timedelta
+
+        total_scores[intervention] = TotalScore
+    }
+    log_total_scores(total_scores)
+    let selected_intervention = get_intervention_with_highest_total_score(total_scores) // max(total_score) with tiebreaker Timedelta
+    
+    // trigger intervention with random 50% chance
+    let is_triggered
+    if (random() < 0.5) {
+        trigger_intervention(selected_intervention) // for correct target, same as pilot. 
+        is_triggered = true
+    } else {
+        is_triggered = false
+    }
+
+    log_intervention_selection(current_datetime(), selected_situation, selected_intervention, is_triggered)
+    return null
+}
+
+
