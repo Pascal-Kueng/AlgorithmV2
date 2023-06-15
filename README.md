@@ -1,6 +1,5 @@
 # AlgorithmV2
-Algorithm for Time and Ties Project
-
+Updated Algorithm for Time and Ties Project
 
 ## Complete System Summary (new algorithm)
 
