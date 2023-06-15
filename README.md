@@ -13,6 +13,11 @@ The decision to trigger an EMA should be based on the individual's expected acti
 
 In the EMA, the person will again specify whether and in which slot they expect to be active. When the EMA is submitted, the system should check if an expected activity is still upcoming for the day. If it is, the system should start the selection a situation for 'before_activity' right away (see Algorithm 2).  
 
+
+Flowchart EMA:  
+![image](https://github.com/Pascal-Kueng/AlgorithmV2/assets/108430531/a110a257-84af-4241-8f05-e94995b0784a)
+
+
 Pseudo code example implementation for EMA Triggering and Scoring:
 
 ```javascript
@@ -67,6 +72,9 @@ The system should include a mechanism for calculating situation scores. Like in 
 
 The total score for each situation should be calculated as a combination of (3x) severity score, frequency score, and time delta. These scores represent the severity of the situation, how often it occurs, and the time since it last occurred, respectively.
 
+Flochart Algorithm 1:  
+![image](https://github.com/Pascal-Kueng/AlgorithmV2/assets/108430531/b4455901-7252-41f6-8353-53ab9e02d3e4)
+
 Pseudo code for Algorithm 1: Calculate Situation Scores:
 
 ```javascript
@@ -109,7 +117,10 @@ function calculate_total_scores(all_situations) {
 
 The system should include a mechanism for selecting situations. This should be done every Sunday at 4am for each couple (slot “before planning”), but it can also be triggered by an EMA (slot “before activity”) or Algorithm 1 (slot “evening”).
 
-The system should select situations based on the aggregated score and the selection score. The final score for each situation should be calculated as a combination of these two scores (weighted geometric mean). The aggregated score is the mean of the last 14 total scores, and the selection score is the last total score from the daily questionnaire or today's EMA score, depending on the slot.
+The system should select situations based on the aggregated score and the selection score. The final score for each situation should be calculated as a combination of these two scores (weighted geometric mean). The aggregated score is the mean of the last 14 total scores, and the selection score is the last total score from the daily questionnaire or today's EMA score, depending on the slot.  
+
+Flowchart Algorithm 2:  
+![image](https://github.com/Pascal-Kueng/AlgorithmV2/assets/108430531/1566da2d-4118-482c-ae66-29dde8eda423)
 
 Pseudo code for Algorithm 2: Select Situations:
 
@@ -151,6 +162,10 @@ The system should include a mechanism for selecting interventions. This should b
 The system should select interventions based on their frequency and time delta. The total score for each intervention should be calculated as a combination of these two factors.
 
 The selected intervention should be triggered with a 50% chance. The system should log the details of the intervention selection, including the current date and time, the selected situation, the selected intervention, and whether the intervention was triggered.
+
+Flowchart Algorithm 3:  
+![image](https://github.com/Pascal-Kueng/AlgorithmV2/assets/108430531/5734945b-fcd6-4fcd-b652-5f7a181bf82b)
+
 
 Pseudo code for Algorithm 3: Select Intervention:
 
