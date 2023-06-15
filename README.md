@@ -164,7 +164,7 @@ The system should select interventions based on their frequency and time delta. 
 The selected intervention should be triggered with a 50% chance. The system should log the details of the intervention selection, including the current date and time, the selected situation, the selected intervention, and whether the intervention was triggered.
 
 Flowchart Algorithm 3:  
-<img src="https://github.com/Pascal-Kueng/AlgorithmV2/assets/108430531/5734945b-fcd6-4fcd-b652-5f7a181bf82b" width=400>
+<img src="https://github.com/Pascal-Kueng/AlgorithmV2/assets/108430531/5734945b-fcd6-4fcd-b652-5f7a181bf82b" width=450>
 
 
 Pseudo code for Algorithm 3: Select Intervention:
