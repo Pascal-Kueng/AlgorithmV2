@@ -16,7 +16,7 @@ In the EMA, the person will again specify whether and in which slot they expect 
 
 Pseudo code example implementation for EMA Triggering and Scoring:
 
-```pseudocode
+```javascript
 let was_already_triggered = false 
 
 // Cronjob:
@@ -62,7 +62,7 @@ function EMA_submitted(person, EMA_answers, upcoming_time_slot) {
 }
 ```
 
-Algorithm 1: Calculate Situation Scores
+### Algorithm 1: Calculate Situation Scores
 
 The system should include a mechanism for calculating situation scores. Like in the pilot study, the system can execute this algorithm every 5 minutes between 6pm and 5am for each couple. The calculation should only proceed if both partners have completed their diaries. If not, and it's past 4am, the system should wait until the next check. Otherwise, it should log all total scores as zero and trigger situations 0A, 0B, and 0C.
 
@@ -71,23 +71,42 @@ The total score for each situation should be calculated as a combination of (3x)
 Pseudo code for Algorithm 1: Calculate Situation Scores:
 
 ```javascript
+// Selection Cronjob: 
+// every 5 minutes between 6pm and 5am (foreach couple):
 function daily_situation_selection(couple) {
     if (!is_partner_A_diary_complete or !is_partner_B_diary_complete) {
         
         if (is_past_4am) {
-            return null 
+            return null // check again at next cronjob
         } else {
-            trigger_situations_0A_0B_0C() 
-            log_all_total_scores_as_zero() 
+            trigger_situations_0A_0B_0C() // same as pilot
+            log_all_total_scores_as_zero() // in same files as in pilot (selection chains etc.)
             return null
         }
     }
 
     calculate_total_scores()
-    select_situation
+    select_situation('evening')
+}
+
+
+function calculate_total_scores(all_situations) {
+    let total_scores = {} // key: situation, value: score
+    foreach situation in all_situations {
+        let SeverityScore = calculate_severity_score(situation) // same as pilot. IMPORTANT: If variables are missing, use NA, not 0. 
+        let FrequencyScore = calculate_frequency_score(situation) // same as pilot.
+        let TimeDelta = calculate_time_delta(situation) // same as pilot
+
+        TotalScore = 3 * SeverityScore + FrequencyScore + TimeDelta
+        total_scores[situation] = TotalScore
+    }
+
+    log_total_scores(total_scores)
+    return null
+}
 ```
 
-Algorithm 2: Select Situations
+### Algorithm 2: Select Situations
 
 The system should include a mechanism for selecting situations. This should be done every Sunday at 4am for each couple (slot “before planning”), but it can also be triggered by an EMA (slot “before activity”) or Algorithm 1 (slot “evening”).
 
@@ -96,18 +115,21 @@ The system should select situations based on the aggregated score and the select
 Pseudo code for Algorithm 2: Select Situations:
 
 ```javascript
+// Cronjob:
+// sundays at 4am (foreach couple):
+// can also be triggered by EMA (see above) and other Algorithm 1. 
 function select_situation(slot) {
-    let situations_for_current_slot = get_situations_for_current_slot(slot)
+    let situations_for_current_slot = get_situations_for_current_slot(slot) // simple subsetting
 
     final_scores = {}
     foreach (situation in situations_for_current_slot) {
-        let last_14_total_scores = get_last_14_total_scores(situation)
+        let last_14_total_scores = get_last_14_total_scores(situation) // from log files somehow. 
 
         let AggregatedScore = mean(last_14_total_scores)
         
         let SelectionScore
         if (slot == 'evening' or slot == 'before_planning') {
-            SelectionScore =last_14_total_scores[-1]
+            SelectionScore =last_14_total_scores[-1] // last Total Score from DQ
         } else if (slot == 'before_activity') {
             SelectionScore = get_todays_EMA_score(situation) 
         }
@@ -118,12 +140,12 @@ function select_situation(slot) {
 
     log_final_scores(final_scores)
 
-    let selected_situation = get_situation_with_highest_total_score(final_scores)
+    let selected_situation = get_situation_with_highest_total_score(final_scores) // max(final_score) with tiebreaker Timedelta
     intervention_selection(selected_situation)
     return null
 }
 ```
-Algorithm 3: Select Intervention
+### Algorithm 3: Select Intervention
 
 The system should include a mechanism for selecting interventions. This should be triggered by Algorithm 2.
 
@@ -134,6 +156,7 @@ The selected intervention should be triggered with a 50% chance. The system shou
 Pseudo code for Algorithm 3: Select Intervention:
 
 ```javascript
+// no Cronjob, only triggered by Algorithm 2. 
 function intervention_selection(selected_situation) {
     let intervention_pool = get_intervention_pool(selected_situation)
     
@@ -146,11 +169,12 @@ function intervention_selection(selected_situation) {
         total_scores[intervention] = TotalScore
     }
     log_total_scores(total_scores)
-    let selected_intervention = get_intervention_with_highest_total_score(total_scores)
+    let selected_intervention = get_intervention_with_highest_total_score(total_scores) // max(total_score) with tiebreaker Timedelta
     
+    // trigger intervention with random 50% chance
     let is_triggered
-        if (random() < 0.5) {
-        trigger_intervention(selected_intervention)
+    if (random() < 0.5) {
+        trigger_intervention(selected_intervention) // for correct target, same as pilot. 
         is_triggered = true
     } else {
         is_triggered = false
