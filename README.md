@@ -14,7 +14,7 @@ The triggering of an EMA should occur exactly once every day and can happen at d
 
 The decision to trigger an EMA should be based on the individual's expected activity for the day, which can be retrieved from their last daily questionnaire. If no activity is planned, the EMA should be triggered during the lunch time slot (12pm). If an activity is planned for a specific time slot, the EMA should be triggered during that time slot.  
 
-In the EMA, the person will again specify whether and in which slot they expect to be active. When the EMA is submitted, the system should check if an expected activity is still upcoming for the day. If it is, the system should start the selection a situation for 'before_activity' right away (see Algorithm 2).  
+In the EMA, the person will again specify whether and in which slot they expect to be active. When the EMA is submitted, the system should check if an expected activity is still upcoming for the day. If it is, the system should start the selection of a situation for 'before_activity' right away (see Algorithm 2).  
 
 
 Flowchart EMA:  
