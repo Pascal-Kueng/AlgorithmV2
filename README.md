@@ -73,7 +73,7 @@ The system should include a mechanism for calculating situation scores. Like in 
 The total score for each situation should be calculated as a combination of (3x) severity score, frequency score, and time delta. These scores represent the severity of the situation, how often it occurs, and the time since it last occurred, respectively.
 
 Flochart Algorithm 1:  
-<img src="https://github.com/Pascal-Kueng/AlgorithmV2/assets/108430531/a110a257-84af-4241-8f05-e94995b0784a" width=750 >
+<img src="https://github.com/Pascal-Kueng/AlgorithmV2/assets/108430531/a110a257-84af-4241-8f05-e94995b0784a" width=500 >
 
 Pseudo code for Algorithm 1: Calculate Situation Scores:
 
@@ -120,7 +120,7 @@ The system should include a mechanism for selecting situations. This should be d
 The system should select situations based on the aggregated score and the selection score. The final score for each situation should be calculated as a combination of these two scores (weighted geometric mean). The aggregated score is the mean of the last 14 total scores, and the selection score is the last total score from the daily questionnaire or today's EMA score, depending on the slot.  
 
 Flowchart Algorithm 2:  
-<img src="https://github.com/Pascal-Kueng/AlgorithmV2/assets/108430531/1566da2d-4118-482c-ae66-29dde8eda423" width=750 >
+<img src="https://github.com/Pascal-Kueng/AlgorithmV2/assets/108430531/1566da2d-4118-482c-ae66-29dde8eda423" width=500 >
 
 Pseudo code for Algorithm 2: Select Situations:
 
