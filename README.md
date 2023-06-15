@@ -73,7 +73,7 @@ The system should include a mechanism for calculating situation scores. Like in 
 The total score for each situation should be calculated as a combination of (3x) severity score, frequency score, and time delta. These scores represent the severity of the situation, how often it occurs, and the time since it last occurred, respectively.
 
 Flochart Algorithm 1:  
-<img src="https://github.com/Pascal-Kueng/AlgorithmV2/assets/108430531/a110a257-84af-4241-8f05-e94995b0784a" width=500 >
+<img src="https://github.com/Pascal-Kueng/AlgorithmV2/assets/108430531/f0b897cc-46bc-43fb-922c-48be3d1eb88b" width=500>
 
 Pseudo code for Algorithm 1: Calculate Situation Scores:
 
