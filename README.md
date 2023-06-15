@@ -1,2 +1,163 @@
 # AlgorithmV2
 Algorithm for Time and Ties Project
+
+
+## Complete System Summary (new algorithm)
+
+### Ecological Momentary Assessment (EMA) Triggering and Scoring
+
+The system should include a mechanism for triggering an Ecological Momentary Assessment (EMA). EMAs are brief surveys that ask individuals about their experiences, behaviors, and moods at the moment.  
+
+The triggering of an EMA should occur exactly once every day and can happen at different specific times throughout the day (5am, 11am, 12pm, 1pm, and 5pm).  
+
+The decision to trigger an EMA should be based on the individual's expected activity for the day, which can be retrieved from their last daily questionnaire. If no activity is planned, the EMA should be triggered during the lunch time slot (12pm). If an activity is planned for a specific time slot, the EMA should be triggered during that time slot.  
+
+In the EMA, the person will again specify whether and in which slot they expect to be active. When the EMA is submitted, the system should check if an expected activity is still upcoming for the day. If it is, the system should start the selection a situation for 'before_activity' right away (see Algorithm 2).  
+
+Pseudo code example implementation for EMA Triggering and Scoring:
+
+```pseudocode
+let was_already_triggered = false 
+
+// Cronjob:
+function decide_if_trigger_EMA(person, upcoming_time_slot, was_already_triggered) {
+    if (was_already_triggered) {
+        if (upcoming_time_slot == 4) { // last slot of the day, reset this variable
+            was_already_triggered = false
+        }
+        return null
+    }
+
+    let expected_activity = get_answer_from_last_daily_questionnaire(person)['ss_exp_active'] // retrieve this persons last daily questionnaire answers. 
+    
+    if (expected_activity == 0) { // 0 == no activity planned
+        if (upcoming_time_slot == 88) { // lunch-EMA time slot
+            trigger_EMA() // send EMA to person. See logic in EMA_submitted() below as well. 
+            was_already_triggered = true
+            return null
+        } else {
+            return null
+        }
+    }
+
+    if (expected_activity == upcoming_time_slot) { 
+        trigger_EMA()
+        was_already_triggered = true
+    }
+
+    return null
+}
+
+
+// The actual EMA should also include some logic:
+// when EMA was submitted by "person":
+// alternatively this could be handled with a separate cronjob that checks in time-intervals, if the EMA was submitted (like Algorithm 1 below).
+function EMA_submitted(person, EMA_answers, upcoming_time_slot) {
+    let expected_activity = EMA_answers['ss_exp_active']
+
+    if (expected_activity >= upcoming_time_slot) { // greater or equal, so if the activity is upcoming today still. 
+        select_situation('before_activity')
+    }
+    return null
+}
+```
+
+Algorithm 1: Calculate Situation Scores
+
+The system should include a mechanism for calculating situation scores. Like in the pilot study, the system can execute this algorithm every 5 minutes between 6pm and 5am for each couple. The calculation should only proceed if both partners have completed their diaries. If not, and it's past 4am, the system should wait until the next check. Otherwise, it should log all total scores as zero and trigger situations 0A, 0B, and 0C.
+
+The total score for each situation should be calculated as a combination of (3x) severity score, frequency score, and time delta. These scores represent the severity of the situation, how often it occurs, and the time since it last occurred, respectively.
+
+Pseudo code for Algorithm 1: Calculate Situation Scores:
+
+```javascript
+function daily_situation_selection(couple) {
+    if (!is_partner_A_diary_complete or !is_partner_B_diary_complete) {
+        
+        if (is_past_4am) {
+            return null 
+        } else {
+            trigger_situations_0A_0B_0C() 
+            log_all_total_scores_as_zero() 
+            return null
+        }
+    }
+
+    calculate_total_scores()
+    select_situation
+```
+
+Algorithm 2: Select Situations
+
+The system should include a mechanism for selecting situations. This should be done every Sunday at 4am for each couple (slot “before planning”), but it can also be triggered by an EMA (slot “before activity”) or Algorithm 1 (slot “evening”).
+
+The system should select situations based on the aggregated score and the selection score. The final score for each situation should be calculated as a combination of these two scores (weighted geometric mean). The aggregated score is the mean of the last 14 total scores, and the selection score is the last total score from the daily questionnaire or today's EMA score, depending on the slot.
+
+Pseudo code for Algorithm 2: Select Situations:
+
+```javascript
+function select_situation(slot) {
+    let situations_for_current_slot = get_situations_for_current_slot(slot)
+
+    final_scores = {}
+    foreach (situation in situations_for_current_slot) {
+        let last_14_total_scores = get_last_14_total_scores(situation)
+
+        let AggregatedScore = mean(last_14_total_scores)
+        
+        let SelectionScore
+        if (slot == 'evening' or slot == 'before_planning') {
+            SelectionScore =last_14_total_scores[-1]
+        } else if (slot == 'before_activity') {
+            SelectionScore = get_todays_EMA_score(situation) 
+        }
+
+        FinalScore = (AggregatedScore^0.6) * (SelectionScore^0.4)
+        final_scores[situation] = FinalScore
+    }
+
+    log_final_scores(final_scores)
+
+    let selected_situation = get_situation_with_highest_total_score(final_scores)
+    intervention_selection(selected_situation)
+    return null
+}
+```
+Algorithm 3: Select Intervention
+
+The system should include a mechanism for selecting interventions. This should be triggered by Algorithm 2.
+
+The system should select interventions based on their frequency and time delta. The total score for each intervention should be calculated as a combination of these two factors.
+
+The selected intervention should be triggered with a 50% chance. The system should log the details of the intervention selection, including the current date and time, the selected situation, the selected intervention, and whether the intervention was triggered.
+
+Pseudo code for Algorithm 3: Select Intervention:
+
+```javascript
+function intervention_selection(selected_situation) {
+    let intervention_pool = get_intervention_pool(selected_situation)
+    
+    let total_scores = {}
+    foreach (intervention in intervention_pool) {
+        let Frequency = get_frequency(intervention)
+        let Timedelta = get_timedelta(intervention)
+        let TotalScore = Frequency + Timedelta
+
+        total_scores[intervention] = TotalScore
+    }
+    log_total_scores(total_scores)
+    let selected_intervention = get_intervention_with_highest_total_score(total_scores)
+    
+    let is_triggered
+        if (random() < 0.5) {
+        trigger_intervention(selected_intervention)
+        is_triggered = true
+    } else {
+        is_triggered = false
+    }
+
+    log_intervention_selection(current_datetime(), selected_situation, selected_intervention, is_triggered)
+    return null
+}
+```
+
