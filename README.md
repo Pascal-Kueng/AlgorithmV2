@@ -15,7 +15,7 @@ In the EMA, the person will again specify whether and in which slot they expect 
 
 
 Flowchart EMA:  
-<img src = "https://github.com/Pascal-Kueng/AlgorithmV2/assets/108430531/a110a257-84af-4241-8f05-e94995b0784a" width=150>
+<img src = "https://github.com/Pascal-Kueng/AlgorithmV2/assets/108430531/a110a257-84af-4241-8f05-e94995b0784a" width=750>
 
 
 Pseudo code example implementation for EMA Triggering and Scoring:
@@ -73,7 +73,7 @@ The system should include a mechanism for calculating situation scores. Like in 
 The total score for each situation should be calculated as a combination of (3x) severity score, frequency score, and time delta. These scores represent the severity of the situation, how often it occurs, and the time since it last occurred, respectively.
 
 Flochart Algorithm 1:  
-![image](https://github.com/Pascal-Kueng/AlgorithmV2/assets/108430531/b4455901-7252-41f6-8353-53ab9e02d3e4)
+<img src="https://github.com/Pascal-Kueng/AlgorithmV2/assets/108430531/a110a257-84af-4241-8f05-e94995b0784a" width=750 >
 
 Pseudo code for Algorithm 1: Calculate Situation Scores:
 
@@ -120,7 +120,7 @@ The system should include a mechanism for selecting situations. This should be d
 The system should select situations based on the aggregated score and the selection score. The final score for each situation should be calculated as a combination of these two scores (weighted geometric mean). The aggregated score is the mean of the last 14 total scores, and the selection score is the last total score from the daily questionnaire or today's EMA score, depending on the slot.  
 
 Flowchart Algorithm 2:  
-![image](https://github.com/Pascal-Kueng/AlgorithmV2/assets/108430531/1566da2d-4118-482c-ae66-29dde8eda423)
+<img src="https://github.com/Pascal-Kueng/AlgorithmV2/assets/108430531/1566da2d-4118-482c-ae66-29dde8eda423" width=750 >
 
 Pseudo code for Algorithm 2: Select Situations:
 
@@ -164,7 +164,7 @@ The system should select interventions based on their frequency and time delta. 
 The selected intervention should be triggered with a 50% chance. The system should log the details of the intervention selection, including the current date and time, the selected situation, the selected intervention, and whether the intervention was triggered.
 
 Flowchart Algorithm 3:  
-![image](https://github.com/Pascal-Kueng/AlgorithmV2/assets/108430531/5734945b-fcd6-4fcd-b652-5f7a181bf82b)
+<img src="https://github.com/Pascal-Kueng/AlgorithmV2/assets/108430531/5734945b-fcd6-4fcd-b652-5f7a181bf82b" width=750>
 
 
 Pseudo code for Algorithm 3: Select Intervention:
