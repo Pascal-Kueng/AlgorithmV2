@@ -71,7 +71,7 @@ function EMA_submitted(person, EMA_answers, upcoming_time_slot) {
 
 ### Algorithm 1: Calculate Situation Scores
 
-The system should include a mechanism for calculating situation scores. Like in the pilot study, the system can execute this algorithm every 5 minutes between 6pm and 5am for each couple. The calculation should only proceed if both partners have completed their diaries. If not, and it's past 4am, the system should wait until the next check. Otherwise, it should log all total scores as zero and trigger situations 0A, 0B, and 0C.
+The system should include a mechanism for calculating situation scores. Like in the pilot study, the system can execute this algorithm every 5 minutes between 6pm and 5am for each couple. The calculation should only proceed if both partners have completed their diaries. If not, and it's not yet past 4am, the system should wait until the next check. Otherwise, it should log all total scores as zero and trigger situations 0A, 0B, and 0C.
 
 The total score for each situation should be calculated as a combination of (3x) severity score, frequency score, and time delta. These scores represent the severity of the situation, how often it occurs, and the time since it last occurred, respectively.
 
@@ -86,7 +86,7 @@ Pseudo code for Algorithm 1: Calculate Situation Scores:
 function daily_situation_selection(couple) {
     if (!is_partner_A_diary_complete or !is_partner_B_diary_complete) {
         
-        if (is_past_4am) {
+        if (!is_past_4am) {
             return null // check again at next cronjob
         } else {
             trigger_situations_0A_0B_0C() // same as pilot
