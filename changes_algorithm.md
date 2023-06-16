@@ -22,6 +22,7 @@
     - Previously, there were two versions: "before planning" and "before activity." Their sole purpose was to check if the situation was present and if a situation was in the slot. Now, they will actually select the situation and the intervention.
     - The second algorithm now aggregates the recent TotalScores from the first algorithm, but only for situations suitable for the current slot. It then uses the "SelectionScore" to calculate the FinalScore and selects the situation with the highest FinalScore.
     - What the SelectionScore is, depends on the slot. The "evening" slot and the "before planning" slot use the last TotalScores as the SelectionScores (today's and the last day's respectively). The "before activity" slot uses the EMA Score. We will provide an additional column to the "Situations" sheet, with a formula based on the EMA questions for each situation. 
+    - Besides what the SelectionScore is, the second algorithm is identical between all slots. 
 
 ## Timing of Slots
 
