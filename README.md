@@ -29,7 +29,7 @@ let was_already_triggered = false
 // Cronjob:
 function decide_if_trigger_EMA(person, upcoming_time_slot, was_already_triggered) {
     if (was_already_triggered) {
-        if (upcoming_time_slot == 4) { // last slot of the day, reset this variable
+        if (upcoming_time_slot === 4) { // last slot of the day, reset this variable
             was_already_triggered = false
         }
         return null
@@ -37,8 +37,8 @@ function decide_if_trigger_EMA(person, upcoming_time_slot, was_already_triggered
 
     let expected_activity = get_answer_from_last_daily_questionnaire(person)['ss_exp_active'] // retrieve this persons last daily questionnaire answers. 
     
-    if (expected_activity == 0) { // 0 == no activity planned
-        if (upcoming_time_slot == 88) { // lunch-EMA time slot
+    if (expected_activity === 0) { // 0 === no activity planned
+        if (upcoming_time_slot === 88) { // lunch-EMA time slot
             trigger_EMA() // send EMA to person. See logic in EMA_submitted() below as well. 
             was_already_triggered = true
             return null
@@ -47,7 +47,7 @@ function decide_if_trigger_EMA(person, upcoming_time_slot, was_already_triggered
         }
     }
 
-    if (expected_activity == upcoming_time_slot) { 
+    if (expected_activity === upcoming_time_slot) { 
         trigger_EMA()
         was_already_triggered = true
     }
@@ -141,9 +141,9 @@ function select_situation(slot) {
         let AggregatedScore = mean(last_14_total_scores)
         
         let SelectionScore
-        if (slot == 'evening' or slot == 'before_planning') {
+        if (slot === 'evening' or slot === 'before_planning') {
             SelectionScore =last_14_total_scores[-1] // last Total Score from DQ
-        } else if (slot == 'before_activity') {
+        } else if (slot === 'before_activity') {
             SelectionScore = get_todays_EMA_score(situation) 
         }
 
