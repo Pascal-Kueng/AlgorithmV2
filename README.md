@@ -2,12 +2,12 @@
 Updated Algorithm for Time and Ties Project  
 We use this algorithm to select the best intervention based on i) long term responses to the daily questionnaire to detect tendencies and patterns in the couples, and ii) shortly before sending an intervention to recognize a situation adequate for intervening.  
 
-Broad Overview:  
-<img src="https://github.com/Pascal-Kueng/AlgorithmV2/assets/108430531/077bc429-9f06-4cc6-b1ad-69205e6064e6" width=500>
-
-
 Specific changes from the <a href="https://github.com/Pascal-Kueng/AlgorithmV2/blob/main/Algorithm%20Pilot.png">old algorithm</a> are summarized <a href="https://github.com/Pascal-Kueng/AlgorithmV2/blob/main/changes_algorithm.md">here</a>.  
-Following in this document is a complete summary of the new algorithm.  
+
+Broad Overview:  
+<img src="https://github.com/Pascal-Kueng/AlgorithmV2/assets/108430531/077bc429-9f06-4cc6-b1ad-69205e6064e6" width=500>  
+
+Following in this document is a comprehensive summary of the new algorithm.  
 
 ## Complete System Summary (new algorithm)
 
