@@ -23,7 +23,7 @@ In the EMA, the person will again specify whether and in which slot they expect 
 
 
 Flowchart EMA:  
-<img src = "https://github.com/Pascal-Kueng/AlgorithmV2/assets/108430531/a110a257-84af-4241-8f05-e94995b0784a" width=750>
+<img src = "https://github.com/Pascal-Kueng/AlgorithmV2/assets/108430531/a110a257-84af-4241-8f05-e94995b0784a" height=500>
 
 
 Pseudo code example implementation for EMA Triggering and Scoring:
