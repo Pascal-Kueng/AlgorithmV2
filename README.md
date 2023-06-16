@@ -1,5 +1,6 @@
 # AlgorithmV2
 Updated Algorithm for Time and Ties Project  
+We use this algorithm to select the best intervention based on i) long term responses to the daily questionnaire to detect tendencies and patterns in the couples, and ii) shortly before sending an intervention to recognize a situation adequate for intervening.  
 
 Specific changes from the <a href="https://github.com/Pascal-Kueng/AlgorithmV2/blob/main/Algorithm%20Pilot.png">old algorithm</a> are summarized <a href="https://github.com/Pascal-Kueng/AlgorithmV2/blob/main/changes_algorithm.md">here</a>.  
 Following in this document is a complete summary of the new algorithm.  
@@ -8,7 +9,7 @@ Following in this document is a complete summary of the new algorithm.
 
 ### Ecological Momentary Assessment (EMA) Triggering and Scoring
 
-The system should include a mechanism for triggering an Ecological Momentary Assessment (EMA). EMAs are brief surveys that ask individuals about their experiences, behaviors, and moods at the moment.  
+The system should include a mechanism for triggering an Ecological Momentary Assessment (EMA) close to when we expect a physical activity to be performed. EMAs are brief surveys that ask individuals about their experiences, behaviors, and moods at the moment.  
 
 The triggering of an EMA should occur exactly once every day and can happen at different specific times throughout the day (5am, 11am, 12pm, 1pm, and 5pm).  
 
@@ -69,9 +70,9 @@ function EMA_submitted(person, EMA_answers, upcoming_time_slot) {
 }
 ```
 
-### Algorithm 1: Calculate Situation Scores
+### Algorithm 1: Calculate TotalScores
 
-The system should include a mechanism for calculating situation scores. Like in the pilot study, the system can execute this algorithm every 5 minutes between 6pm and 5am for each couple. The calculation should only proceed if both partners have completed their diaries. If not, and it's not yet past 4am, the system should wait until the next check. Otherwise, it should log all total scores as zero and trigger situations 0A, 0B, and 0C.
+The system should include a mechanism for calculating TotalScores based on the responses to the daily diaries. This is the score defining which of our pre-defined situations matches the couple's existing condition best. Like in the pilot study, the system can execute this algorithm every 5 minutes between 6pm and 5am for each couple. The calculation should only proceed if both partners have completed their diaries. If not, and it's not yet past 4am, the system should wait until the next check. Otherwise, it should log all total scores as zero and trigger situations 0A, 0B, and 0C.
 
 The total score for each situation should be calculated as a combination of (3x) severity score, frequency score, and time delta. These scores represent the severity of the situation, how often it occurs, and the time since it last occurred, respectively.
 
@@ -118,9 +119,9 @@ function calculate_total_scores(all_situations) {
 
 ### Algorithm 2: Select Situations
 
-The system should include a mechanism for selecting situations. This should be done every Sunday at 4am for each couple (slot “before planning”), but it can also be triggered by an EMA (slot “before activity”) or Algorithm 1 (slot “evening”).
+The system should include a mechanism for selecting situations. This should be done every Sunday at 4am for each couple (slot “before planning”), but it can also be triggered by an EMA (slot “before activity”) or by Algorithm 1 (slot “evening”).
 
-The system should select situations based on the aggregated score and the selection score. The final score for each situation should be calculated as a combination of these two scores (weighted geometric mean). The aggregated score is the mean of the last 14 total scores, and the selection score is the last total score from the daily questionnaire or today's EMA score, depending on the slot.  
+The system should select situations based on the aggregated TotalScores and the SelectionScores. The final score for each situation should be calculated as a combination of these two scores (weighted geometric mean). The aggregated score is the mean of the last 14 total scores, and the selection score is the last TotalScore from the daily questionnaire or today's EMA score, depending on the slot.  
 
 Flowchart Algorithm 2:  
 <img src="https://github.com/Pascal-Kueng/AlgorithmV2/assets/108430531/1566da2d-4118-482c-ae66-29dde8eda423" width=500 >
@@ -162,7 +163,7 @@ function select_situation(slot) {
 
 The system should include a mechanism for selecting interventions. This should be triggered by Algorithm 2.
 
-The system should select interventions based on their frequency and time delta. The total score for each intervention should be calculated as a combination of these two factors.
+The system should select interventions based on their frequency and time delta (frequency: to avoid sending the same interventions to all couples too much; time delta: to avoid sending the same interventions many times in a row to the same couple). The total score for each intervention should be calculated as a combination of these two factors.
 
 The selected intervention should be triggered with a 50% chance. The system should log the details of the intervention selection, including the current date and time, the selected situation, the selected intervention, and whether the intervention was triggered.
 
