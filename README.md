@@ -72,7 +72,7 @@ function EMA_submitted(person, EMA_answers, upcoming_time_slot) {
 
 ### Algorithm 1: Calculate TotalScores
 
-The system should include a mechanism for calculating TotalScores based on the responses to the daily diaries. This is the score defining which of our pre-defined situations matches the couple's existing condition best. Like in the pilot study, the system can execute this algorithm every 5 minutes between 6pm and 5am for each couple. The calculation should only proceed if both partners have completed their diaries. If not, and it's not yet past 4am, the system should wait until the next check. Otherwise, it should log all total scores as zero and trigger situations 0A, 0B, and 0C.
+The system should include a mechanism for calculating TotalScores based on the responses to the daily diaries. This is the score defining which of our pre-defined situations matches the couple's existing condition best, while taking frequency and time delta into account (avoiding overselecting the same situation). Like in the pilot study, the system can execute this algorithm every 5 minutes between 6pm and 5am for each couple. The calculation should only proceed if both partners have completed their diaries. If not, and it's not yet past 4am, the system should wait until the next check. Otherwise, it should log all total scores as zero and trigger situations 0A, 0B, and 0C.
 
 The total score for each situation should be calculated as a combination of (3x) severity score, frequency score, and time delta. These scores represent the severity of the situation, how often it occurs, and the time since it last occurred, respectively.
 
@@ -119,9 +119,11 @@ function calculate_total_scores(all_situations) {
 
 ### Algorithm 2: Select Situations
 
-The system should include a mechanism for selecting situations. This should be done every Sunday at 4am for each couple (slot “before planning”), but it can also be triggered by an EMA (slot “before activity”) or by Algorithm 1 (slot “evening”).
+The system should include a mechanism for selecting situations. This should be done every Sunday at 4am for each couple (slot “before planning”), but also when triggered by an EMA (slot “before activity”) or by Algorithm 1 (slot “evening”).
 
-The system should select situations based on the aggregated TotalScores and the SelectionScores. The final score for each situation should be calculated as a combination of these two scores (weighted geometric mean). The aggregated score is the mean of the last 14 total scores, and the selection score is the last TotalScore from the daily questionnaire or today's EMA score, depending on the slot.  
+The system should calculate the AggregatedScore, which is the mean of the last 14 TotalScores. Then, a SelectionScores is retrieved, which is different depnding on the slot. For the slots "evening" and "before planning" the SelectionScores are the TotalScores form the last daily questionnaires. For the slot "before activity", the SelectionScores are the EMAScores. 
+
+Then, the FinalScores for each situation should be calculated as the weighted geometric mean between the AggregatedScores and the SelectionScores. The situation with the highest FinalScores is selected.
 
 Flowchart Algorithm 2:  
 <img src="https://github.com/Pascal-Kueng/AlgorithmV2/assets/108430531/1566da2d-4118-482c-ae66-29dde8eda423" width=500 >
