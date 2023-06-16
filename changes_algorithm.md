@@ -8,7 +8,7 @@
 
 ## Changes to "Determining the Situation"
 
-1. In the pilot study, the appropriate slot (i.e., before planning, before activity, evening) was defined at the intervention level. Now, it is defined at the situation level. This means that we will have three lists  of situations for each slot.
+1. In the pilot study, the appropriate slot (i.e., before planning, before activity, evening) was defined at the intervention level. Now, it is defined at the situation level. This means that we will have an additional column in the table with situations, specifying the slot.
 
 2. The selection and triggering process of interventions have been revised.
 
