@@ -7,6 +7,7 @@ Specific changes from the <a href="https://github.com/Pascal-Kueng/AlgorithmV2/b
 <img src="https://github.com/Pascal-Kueng/AlgorithmV2/assets/108430531/6848d8ff-0c68-4ac7-aee6-d221f6858a20" width = 700>
 
 Overview of processes in v2:  
+  
 <img src="https://github.com/Pascal-Kueng/AlgorithmV2/assets/108430531/077bc429-9f06-4cc6-b1ad-69205e6064e6" width=500>  
 
 Following in this document is a comprehensive summary of the new algorithm.  
