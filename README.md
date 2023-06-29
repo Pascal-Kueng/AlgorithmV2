@@ -1,10 +1,15 @@
 # AlgorithmV2: Time and Ties Project Update  
-Updated Algorithm for Time and Ties Project  
+
 We use this algorithm to select the best intervention based on i) long term responses to the daily questionnaire to detect tendencies and patterns in the couples, and ii) shortly before sending an intervention to recognize a situation adequate for intervening.  
 
-Specific changes from the <a href="https://github.com/Pascal-Kueng/AlgorithmV2/blob/main/Algorithm%20Pilot.png">Algorithm v1</a> are summarized <a href="https://github.com/Pascal-Kueng/AlgorithmV2/blob/main/changes_algorithm.md">here</a>.  
-
 <img src="https://github.com/Pascal-Kueng/AlgorithmV2/assets/108430531/6848d8ff-0c68-4ac7-aee6-d221f6858a20" width = 700>
+
+All specific changes from the <a href="https://github.com/Pascal-Kueng/AlgorithmV2/blob/main/Algorithm%20Pilot.png">Algorithm v1</a> are summarized <a href="https://github.com/Pascal-Kueng/AlgorithmV2/blob/main/changes_algorithm.md">here</a>. Here is a broad summary of the changes in concept:    
+In our first algorithm (the pilot study), we selected a potential problematic situation daily, based on both partners' questionnaire responses. This identified situation triggered an appropriate intervention from a relevant pool of responses, scheduled for a time when it could prevent the same situation from reoccurring (e.g., before the next planned activity). Each morning, a secondary part of the algorithm assessed whether current conditions matched the anticipated situation (e.g., an activity is planned for today), and if so, triggered the intervention.
+
+For the second algorithm (the main study), we use the same approach as in the pilot study to calculate severity scores from the partners' daily questionnaires. However, these scores are now aggregated over a two-week period, enabling us to focus on persistently occurring situations and enhance the robustness of the selection. However, the aggregated score alone doesn’t specify when to trigger an intervention.
+For this reason, we introduce Ecological Momentary Assessments (EMAs) to identify the presence of a situation. Each situation receives an EMA score reflecting its current likelihood of occurrence. Therefore, each situation now has two scores: an aggregate score indicating the severity over the previous two weeks, and an EMA score denoting the immediate likelihood of its occurrence.
+Each situation can only obtain a high final score, when both individual scores are high. The situation with the top combined score is then selected, followed by a corresponding appropriate intervention.
 
 Overview of processes in v2:  
   
